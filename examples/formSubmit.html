@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="Keywords" content="">
+    <meta name="Description" content="">
+    <meta name="Author" content="TanShenghu">
+    <title>真实的form表单提交，同时保证页面无刷新 组件</title>
+    <link rel="stylesheet" href="http://www.tanshenghu.com/static/css/base.css">
+    <script src="http://a.alipayobjects.com/??seajs/seajs/2.2.0/sea.js,jquery/jquery/1.8.2/jquery.js"></script>
+    <script>
+    seajs.config({
+      paths: {
+            host: 'http://www.tanshenghu.com',
+            widget: 'http://www.tanshenghu.com/widget'
+        },
+        alias: {
+            $: 'host/static/js/$',
+            formSubmit: 'widget/formSubmit/1.0.0/formSubmit'
+        }
+    });
+    </script>
+</head>
+<body>
+    
+    <form action="data.htm" method="post">
+        姓名：<input type="text" name="username" value="TanShenghu"><br>
+        地址：<input type="text" name="address" value="浙江省杭州市西湖区"><br>
+        <input type="button" value="表单提交">
+    </form>
+    <button>数据提交</button>
+    <script>
+    seajs.use('../src/formSubmit', function( FormSubmit ){
+        
+        // 基于已有的表单form提交
+        jQuery('form :button').on('click', function(){
+            
+            FormSubmit({
+                form: 'form',
+                enctype: false,
+                callback: function(ifm, data){
+                    // this => form
+                    alert( data.msg );
+                }
+            })
+        
+        })
+        
+        // 基于已有的json数据的提交
+        jQuery('button').on('click', function(){
+            
+            FormSubmit({
+                action: './data.htm',
+                param: {username: 'TanShenghu', address: '浙江省杭州市西湖区'}, // [{name:"username",value:"TanShenghu"},{key:"addess",value:"浙江省杭州市西湖区"}]
+                enctype: false,
+                method: 'post',
+                callback: function(ifm, data){
+                    // this => form
+                    alert( JSON.stringify(data) );
+                }
+            })
+            
+        })
+        
+    });
+    </script>
+</body>
+</html>
